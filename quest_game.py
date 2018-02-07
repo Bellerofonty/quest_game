@@ -38,7 +38,7 @@ class Player(Person):
         for i in self.slots:
             if self.slots[i]:
                 armor_sum += self.slots[i].armor_points
-        print(armor_sum)
+        return armor_sum
 
     def add_money(self, ammount):
         self.money += ammount
@@ -87,7 +87,8 @@ class Battle:
 
     def start(self):
         print('Началась драка')
-        self._player.count_armor()
+        self._player.armor = 1 + self._player.count_armor()
+        print(self._player.armor)
         last_attacker = self._player
         while self._player.health > 0 and self._enemy.health > 0:
             if last_attacker == self._player:
