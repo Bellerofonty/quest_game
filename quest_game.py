@@ -40,8 +40,11 @@ class Player(Person):
         self.items.add(item)
 
     def use_item(self, item):
-        self.slots[item.type] = item
-        self.items.remove(item)
+        if hasattr(item, 'type'):
+            self.slots[item.type] = item
+            self.items.remove(item)
+        else:
+            print('Нельзя использовать')
 
     def show_items(self):
         if self.items:
@@ -146,8 +149,10 @@ def main():
     street = Location('Улица', player, weapon_merchant, bandit, armor_shop, {'money': 1})
     armor_shop.where_to_go = street
     small_helmet = Armor('Маленький шлем', 1, 500, 'head', 2)
+    old_medallion = Item('Старый медальон', 0.1, 300)
     location = street
     player.add_item(small_helmet)
+    player.add_item(old_medallion)
     #player.slots['head'] = small_helmet
 ##    options =  {1 : location.talk_to_npc, \
 ##                2 : location.start_battle, \
