@@ -33,6 +33,13 @@ class Player(Person):
         self._experience += experience_count
         self._is_next_lvl()
 
+    def count_armor(self):
+        armor_sum = 0
+        for i in self.slots:
+            if self.slots[i]:
+                armor_sum += self.slots[i].armor_points
+        return armor_sum
+
     def add_money(self, ammount):
         self.money += ammount
 
@@ -80,6 +87,8 @@ class Battle:
 
     def start(self):
         print('Началась драка')
+        self._player.armor = 1 + self._player.count_armor()
+        print(self._player.armor)
         last_attacker = self._player
         while self._player.health > 0 and self._enemy.health > 0:
             if last_attacker == self._player:
@@ -141,22 +150,24 @@ class Armor(Item):
         self.stackable = False
 
 def main():
-    player = Player('Путник', 100, 1.2, 10, 499)
+    player = Player('Путник', 100, 1, 10, 499)
     bandit = Enemy('Бандит', 100, 1.2, 10, 2)
     weapon_merchant = NPC('Торговец', 'Оружие')
     armor_merchant = NPC('Торговец', 'Броня')
+
     armor_shop = Location('Лавка продавца брони', player, armor_merchant)
     street = Location('Улица', player, weapon_merchant, bandit, armor_shop, {'money': 1})
     armor_shop.where_to_go = street
-    small_helmet = Armor('Маленький шлем', 1, 500, 'head', 2)
-    old_medallion = Item('Старый медальон', 0.1, 300)
     location = street
+
+    small_helmet = Armor('Маленький шлем', 1, 500, 'head', 0.5)
+    jacket = Armor('Куртка', 1, 100, 'body', 0.3)
+    pants = Armor('Штаны', 0.5, 50, 'legs', 0)
+    old_medallion = Item('Старый медальон', 0.1, 300)
     player.add_item(small_helmet)
     player.add_item(old_medallion)
-    #player.slots['head'] = small_helmet
-##    options =  {1 : location.talk_to_npc, \
-##                2 : location.start_battle, \
-##                3: location.change_location}
+    player.slots['body'] = jacket
+    player.slots['legs'] = pants
 
     print('(0: Выйти из игры)')
     while True:
