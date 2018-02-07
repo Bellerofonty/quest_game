@@ -67,7 +67,9 @@ class Player(Person):
             print('Инвентарь пуст')
 
     def show_slots(self):
-        print(self.slots)
+        for i in self.slots:
+            if self.slots[i]:
+                print(i, self.slots[i].name, self.slots[i].armor_points)
 
 class Enemy(Person):
 
