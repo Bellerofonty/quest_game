@@ -11,6 +11,7 @@ class Person:
 
     def attack(self, enemy):
         enemy.health -= self._calculate_damage(enemy)
+        #print(enemy.armor)
 
 
 class Player(Person):
@@ -106,9 +107,18 @@ class Battle:
             print('Враг победил')
 
 class NPC:
-    def __init__(self, name, goods_type = 0):
+    def __init__(self, name, goods_type = 0, goods = set()):
         self.name = name
         self.goods_type = goods_type
+        self.goods = goods
+
+    def show_goods(self):
+        if self.goods:
+            for i in self.goods:
+                if isinstance(i, Armor):
+                    print(i.name, i.armor_points, i.value)
+        else:
+            print('Увы, товаров нет')
 
 class Location:
     def __init__(self, name, player, npc = 0, enemy = 0, where_to_go = 0, items = {}):
@@ -123,6 +133,9 @@ class Location:
         print('Вы приветствуете NPC {}'.format(self.npc.name))
         if self.npc.goods_type:
             print('{} предлагает поторговать {}'.format(self.npc.name, self.npc.goods_type))
+        answer = input('Посмотреть товары?(1)')
+        if answer == '1':
+            self.npc.show_goods()
 
     def start_battle(self, player, enemy):
         battle = Battle(player, enemy)
@@ -163,6 +176,10 @@ def main():
     location = street
 
     small_helmet = Armor('Маленький шлем', 1, 500, 'head', 0.5)
+    mail_shirt = Armor('Кольчуга', 7, 2000, 'body', 2)
+    #weapon_merchant.goods = {small_helmet, mail_shirt}
+    weapon_merchant.goods.add(small_helmet)
+    weapon_merchant.goods.add(mail_shirt)
     jacket = Armor('Куртка', 1, 100, 'body', 0.3)
     pants = Armor('Штаны', 0.5, 50, 'legs', 0)
     old_medallion = Item('Старый медальон', 0.1, 300)
