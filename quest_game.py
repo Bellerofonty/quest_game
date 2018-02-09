@@ -107,18 +107,12 @@ class Battle:
             print('Враг победил')
 
 class NPC:
-    def __init__(self, name, goods_type = 0, goods = set()):
+    def __init__(self, name, goods_type = 0, goods = set(), talk = 0):
         self.name = name
         self.goods_type = goods_type
         self.goods = goods
+        self.talk = talk
 
-    def show_goods(self):
-        if self.goods:
-            for i in self.goods:
-                if isinstance(i, Armor):
-                    print(i.name, i.armor_points, i.value)
-        else:
-            print('Увы, товаров нет')
 
 class Location:
     def __init__(self, name, player, npc = 0, enemy = 0, where_to_go = 0, items = {}):
@@ -131,11 +125,21 @@ class Location:
 
     def talk_to_npc(self):
         print('Вы приветствуете NPC {}'.format(self.npc.name))
+        if self.npc.talk:
+            print('{} не против поговорить(1)'.format(self.npc.name))
         if self.npc.goods_type:
-            print('{} предлагает поторговать {}'.format(self.npc.name, self.npc.goods_type))
-        answer = input('Посмотреть товары?(1)')
-        if answer == '1':
-            self.npc.show_goods()
+            print('{} предлагает поторговать {}(2)'.format(self.npc.name, self.npc.goods_type))
+        answer = input()
+        if answer == '2':
+            self.trade(self.npc)
+
+    def trade(self, npc):
+        if npc.goods:
+            for i in npc.goods:
+                if isinstance(i, Armor):
+                    print(i.name, i.armor_points, i.value)
+        else:
+            print('Увы, товаров нет')
 
     def start_battle(self, player, enemy):
         battle = Battle(player, enemy)
@@ -150,12 +154,14 @@ class Location:
             print('Деньги персонажа: {}'.format(self.player.money))
             self.items.pop('money')
 
+
 class Item:
     def __init__(self, name, weight, value, stackable = False):
         self.name = name
         self.weight = weight
         self.value = value
         self.stackable = stackable
+
 
 class Armor(Item):
     def __init__(self, name, weight, value, type, armor_points, stackable = False):
@@ -167,8 +173,8 @@ class Armor(Item):
 def main():
     player = Player('Путник', 100, 1, 10, 499)
     bandit = Enemy('Бандит', 100, 1.2, 10, 2)
-    weapon_merchant = NPC('Торговец', 'Оружие')
-    armor_merchant = NPC('Торговец', 'Броня')
+    weapon_merchant = NPC('Торговец', 'Оружие', set())
+    armor_merchant = NPC('Торговец', 'Броня', set()) # без set() weapon_merchant получал те же товары
 
     armor_shop = Location('Лавка продавца брони', player, armor_merchant)
     street = Location('Улица', player, weapon_merchant, bandit, armor_shop, {'money': 1})
@@ -177,9 +183,9 @@ def main():
 
     small_helmet = Armor('Маленький шлем', 1, 500, 'head', 0.5)
     mail_shirt = Armor('Кольчуга', 7, 2000, 'body', 2)
-    #weapon_merchant.goods = {small_helmet, mail_shirt}
-    weapon_merchant.goods.add(small_helmet)
-    weapon_merchant.goods.add(mail_shirt)
+    #armor_merchant.goods = {small_helmet, mail_shirt}
+    armor_merchant.goods.add(small_helmet)
+    armor_merchant.goods.add(mail_shirt)
     jacket = Armor('Куртка', 1, 100, 'body', 0.3)
     pants = Armor('Штаны', 0.5, 50, 'legs', 0)
     old_medallion = Item('Старый медальон', 0.1, 300)
@@ -191,6 +197,9 @@ def main():
     print('(0: Выйти из игры)')
     while True:
         print(location.name)
+        #for i in location.npc.goods:
+        #    print(i.name)
+        #print(location.npc.goods)
         if location.npc:
             print('1: Поговорить с NPC')
         if location.enemy:
