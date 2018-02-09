@@ -61,11 +61,16 @@ class Player(Person):
             for i in self.items:
                 print('{}: {}'.format(j, i.name))
                 j += 1
+            print('{} монет'.format(self.money))
             choice = int(input())
-            if choice != 0 and list(self.items)[choice - 1]:
-                self.use_item(list(self.items)[choice - 1])
+            try:
+                if choice != 0 and list(self.items)[choice - 1]:
+                    self.use_item(list(self.items)[choice - 1])
+            except IndexError:
+                pass
         else:
             print('Инвентарь пуст')
+            print('{} монет'.format(self.money))
 
     def show_slots(self):
         for i in self.slots:
@@ -135,9 +140,23 @@ class Location:
 
     def trade(self, npc):
         if npc.goods:
-            for i in npc.goods:
+            goods = list(npc.goods)
+            for num, i in enumerate(goods, start = 1):
                 if isinstance(i, Armor):
-                    print(i.name, i.armor_points, i.value)
+                    print(num, i.name, i.armor_points, i.value)
+                else:
+                    print(num, i.name, i.value)
+            choice = int(input()) - 1
+            item = goods[choice]
+            if item:
+                if self.player.money >= item.value:
+                    print(item.name)
+                    self.player.items.add(item)
+                    self.npc.goods.remove(item)
+                    self.player.money -= item.value
+                else:
+                    print('Денег маловато')
+
         else:
             print('Увы, товаров нет')
 
@@ -174,7 +193,9 @@ def main():
     player = Player('Путник', 100, 1, 10, 499)
     bandit = Enemy('Бандит', 100, 1.2, 10, 2)
     weapon_merchant = NPC('Торговец', 'Оружие', set())
-    armor_merchant = NPC('Торговец', 'Броня', set()) # без set() weapon_merchant получал те же товары
+    armor_merchant = NPC('Торговец', 'Броня', set())
+    '''без set() weapon_merchant получал те же товары,
+    т.к. они ссылались на один и тот же набор'''
 
     armor_shop = Location('Лавка продавца брони', player, armor_merchant)
     street = Location('Улица', player, weapon_merchant, bandit, armor_shop, {'money': 1})
@@ -183,13 +204,13 @@ def main():
 
     small_helmet = Armor('Маленький шлем', 1, 500, 'head', 0.5)
     mail_shirt = Armor('Кольчуга', 7, 2000, 'body', 2)
-    #armor_merchant.goods = {small_helmet, mail_shirt}
-    armor_merchant.goods.add(small_helmet)
-    armor_merchant.goods.add(mail_shirt)
+    armor_merchant.goods = {small_helmet, mail_shirt}
+##    armor_merchant.goods.add(small_helmet)
+##    armor_merchant.goods.add(mail_shirt)
     jacket = Armor('Куртка', 1, 100, 'body', 0.3)
     pants = Armor('Штаны', 0.5, 50, 'legs', 0)
     old_medallion = Item('Старый медальон', 0.1, 300)
-    player.add_item(small_helmet)
+##    player.add_item(small_helmet)
     player.add_item(old_medallion)
     player.slots['body'] = jacket
     player.slots['legs'] = pants
