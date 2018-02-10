@@ -20,7 +20,7 @@ class Player(Person):
         slots = {'head': 0, 'body':0, 'legs': 0, 'left_arm': 0, 'right_arm': 0}):
         super().__init__(name, health, armor, damage)
         self.money = money
-        self.items = items
+        self.items = items.copy()
         self.slots = slots
         self._experience = 0
         self._exp_to_next_level = 100
@@ -115,7 +115,7 @@ class NPC:
     def __init__(self, name, goods_type = 0, goods = set(), talk = 0):
         self.name = name
         self.goods_type = goods_type
-        self.goods = goods
+        self.goods = goods.copy()
         self.talk = talk
 
 
@@ -125,7 +125,7 @@ class Location:
         self.npc = npc
         self.enemy = enemy
         self.where_to_go = where_to_go
-        self.items = items
+        self.items = items.copy()
         self.player = player
 
     def talk_to_npc(self):
@@ -192,10 +192,8 @@ class Armor(Item):
 def main():
     player = Player('Путник', 100, 1, 10, 499)
     bandit = Enemy('Бандит', 100, 1.2, 10, 2)
-    weapon_merchant = NPC('Торговец', 'Оружие', set())
-    armor_merchant = NPC('Торговец', 'Броня', set())
-    '''без set() weapon_merchant получал те же товары,
-    т.к. они ссылались на один и тот же набор'''
+    weapon_merchant = NPC('Торговец', 'Оружие')
+    armor_merchant = NPC('Торговец', 'Броня')
 
     armor_shop = Location('Лавка продавца брони', player, armor_merchant)
     street = Location('Улица', player, weapon_merchant, bandit, armor_shop, {'money': 1})
