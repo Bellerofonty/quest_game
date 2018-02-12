@@ -1,3 +1,5 @@
+import time
+
 class Person:
     def __init__(self, name, health, armor, damage):
         self.name = name
@@ -54,9 +56,9 @@ class Player(Person):
         else:
             print('Нельзя использовать')
 
-    def put_off_item(self, item):
-        self.items.add(item)
-        self.slots[self.item.type] = 0
+##    def put_off_item(self, item):
+##        self.items.add(item)
+##        self.slots[self.item.type] = 0
 
     def show_items(self):
         if self.items:
@@ -84,7 +86,6 @@ class Player(Person):
                 print(num, i, self.slots[i].name, self.slots[i].armor_points)
                 slot_numbers[num] = self.slots[i].type
                 num += 1
-        input(slot_numbers)
         try:
             choice = int(input())
             if slot_numbers[choice]:
@@ -167,7 +168,7 @@ class Location:
             item = goods[choice]
             if item:
                 if self.player.money >= item.value:
-                    print(item.name)
+                    print('\n{} куплен'.format(item.name))
                     self.player.items.add(item)
                     self.npc.goods.remove(item)
                     self.player.money -= item.value
@@ -189,6 +190,10 @@ class Location:
             self.player.add_money(self.items.get('money'))
             print('Деньги персонажа: {}'.format(self.player.money))
             self.items.pop('money')
+        if self.items:
+            for i in self.items:
+                pass # Дописать. Решить, оставить items {} или set()
+
 
 
 class Item:
@@ -231,7 +236,12 @@ def main():
     player.slots['legs'] = pants
 
     print('(0: Выйти из игры)')
+    first = 0
     while True:
+        if first:
+            time.sleep(0.3)
+        else:
+            first = 1
         print(location.name)
         #for i in location.npc.goods:
         #    print(i.name)
@@ -243,11 +253,15 @@ def main():
         if location.where_to_go:
             print('3: Перейти в локацию {}'.format(location.where_to_go.name))
         if location.items:
-            print('4: Подобрать предмет:\n', location.items)
+            print('4: Подобрать предмет:')
+            for i in location.items:
+                print(i, location.items[i])
         print('5: Посмотреть инвентарь')
         print('6: Посмотреть слоты')
         try:
             choice = int(input())
+            if choice:
+                print('')
             if choice == 1 and location.npc:
                 location.talk_to_npc()
             elif choice == 2 and location.enemy:
