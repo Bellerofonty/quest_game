@@ -54,6 +54,10 @@ class Player(Person):
         else:
             print('Нельзя использовать')
 
+    def put_off_item(self, item):
+        self.items.add(item)
+        self.slots[self.item.type] = 0
+
     def show_items(self):
         if self.items:
             print('Инвентарь:')
@@ -66,16 +70,29 @@ class Player(Person):
             try:
                 if choice != 0 and list(self.items)[choice - 1]:
                     self.use_item(list(self.items)[choice - 1])
-            except IndexError:
+            except (IndexError, ValueError):
                 pass
         else:
             print('Инвентарь пуст')
             print('{} монет'.format(self.money))
 
     def show_slots(self):
+        slot_numbers = dict()
+        num = 1
         for i in self.slots:
             if self.slots[i]:
-                print(i, self.slots[i].name, self.slots[i].armor_points)
+                print(num, i, self.slots[i].name, self.slots[i].armor_points)
+                slot_numbers[num] = self.slots[i].type
+                num += 1
+        input(slot_numbers)
+        try:
+            choice = int(input())
+            if slot_numbers[choice]:
+                self.items.add(self.slots[slot_numbers[choice]])
+                self.slots[slot_numbers[choice]] = 0
+        except (ValueError, KeyError):
+            pass
+
 
 class Enemy(Person):
 
@@ -249,7 +266,7 @@ def main():
             else:
                 print('Ошибка, вариант отсутствует')
         except ValueError:
-            print('Ошибка, введите цифру')
+            pass
         #input('продолжить')
         print('')
 
