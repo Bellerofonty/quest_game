@@ -241,6 +241,13 @@ class Armor(Item):
         self.armor_points = armor_points
         self.stackable = False
 
+
+class Quest:
+    def __init__(self, name, description, bounty):
+        self.name = name
+        self.description = description
+        self.bounty = bounty
+
 def main():
     player = Player('Путник', 100, 1, 10, 499)
     bandit = Enemy('Бандит', 100, 1.2, 10, 2)
