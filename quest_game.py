@@ -95,7 +95,7 @@ class Player(Person):
                 self.slots[slot_numbers[choice]] = 0
         except (ValueError, KeyError):
             pass
-            
+
 
 class Enemy(Person):
 
@@ -144,7 +144,7 @@ class Location:
         self.name = name
         self.npc = npc
         self.enemy = enemy
-        self.where_to_go = where_to_go
+        self.where_to_go = where_to_go.copy()
         self.items = items.copy()
         self.player = player
 
@@ -185,10 +185,21 @@ class Location:
         battle.start()
 
     def change_location(self):
-        print('Перейти в:')
-        pass ###
-        print('Вы переходите в другую локацию')
-        return self.where_to_go
+
+        locs_list = list(self.where_to_go)
+        if len(locs_list) == 1:
+            print('Перейти в локацию {}'.format(locs_list[0].name))
+            input()
+            return locs_list[0]
+        else:
+            print('Перейти в локацию:')
+            for num, i in enumerate(locs_list, start = 1):
+                print(num, i.name)
+            choice = int(input()) - 1
+            if locs_list[choice]:
+                print('Вы переходите в другую локацию')
+                return locs_list[choice]
+
     def pick_up_item(self):
         if 'money' in self.items.keys():
             self.player.add_money(self.items.get('money'))
@@ -222,8 +233,10 @@ def main():
     armor_merchant = NPC('Торговец', 'Броня')
 
     armor_shop = Location('Лавка продавца брони', player, armor_merchant)
-    street = Location('Улица', player, weapon_merchant, bandit, armor_shop, {'money': 1})
-    armor_shop.where_to_go = street
+    street = Location('Улица', player, weapon_merchant, bandit, {armor_shop}, {'money': 1})
+    armor_shop.where_to_go = {street}
+    tavern = Location('Таверна', player)
+    street.where_to_go.add(tavern)
     location = street
 
     small_helmet = Armor('Маленький шлем', 1, 500, 'head', 0.5)
@@ -255,7 +268,7 @@ def main():
         if location.enemy:
             print('2: Напасть на врага {}'.format(location.enemy.name))
         if location.where_to_go:
-            print('3: Перейти в локацию {}'.format(location.where_to_go.name))
+            print('3: Перейти в другую локацию')
         if location.items:
             print('4: Подобрать предмет:')
             for i in location.items:
