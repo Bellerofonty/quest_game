@@ -46,6 +46,9 @@ class Player(Person):
     def add_money(self, ammount):
         self.money += ammount
 
+    def subtract_money(self,ammount):
+        self.money -= ammount
+
     def add_item(self, item):
         self.items.add(item)
 
@@ -95,7 +98,7 @@ class Player(Person):
                 self.slots[slot_numbers[choice]] = 0
         except (ValueError, KeyError):
             pass
-            
+
 
 class Enemy(Person):
 
@@ -140,13 +143,15 @@ class NPC:
 
 
 class Location:
-    def __init__(self, name, player, npc = 0, enemy = 0, where_to_go = set(), items = {}):
+    def __init__(self, name, player, npc = 0, enemy = 0, where_to_go = set(),
+        items = {}, is_inn = 0):
         self.name = name
         self.npc = npc
         self.enemy = enemy
-        self.where_to_go = where_to_go
+        self.where_to_go = where_to_go.copy()
         self.items = items.copy()
         self.player = player
+        self.is_inn = is_inn
 
     def talk_to_npc(self):
         print('Вы приветствуете NPC {}'.format(self.npc.name))
@@ -185,10 +190,21 @@ class Location:
         battle.start()
 
     def change_location(self):
-        print('Перейти в:')
-        pass ###
-        print('Вы переходите в другую локацию')
-        return self.where_to_go
+
+        locs_list = list(self.where_to_go)
+        if len(locs_list) == 1:
+            print('Перейти в локацию {}'.format(locs_list[0].name))
+            input()
+            return locs_list[0]
+        else:
+            print('Перейти в локацию:')
+            for num, i in enumerate(locs_list, start = 1):
+                print(num, i.name)
+            choice = int(input()) - 1
+            if locs_list[choice]:
+                print('Вы переходите в другую локацию')
+                return locs_list[choice]
+
     def pick_up_item(self):
         if 'money' in self.items.keys():
             self.player.add_money(self.items.get('money'))
@@ -198,6 +214,16 @@ class Location:
             for i in self.items:
                 pass # Дописать. Решить, оставить items {} или set()
 
+    def rent_room(self):
+        if self.player.money >= 5:
+            print('Комната твоя на ночь')
+            self.player.subtract_money(5)
+            for i in range(10):
+                print('-', end = '')
+                time.sleep(0.07)
+            print('\nНаступило утро')
+        else:
+            print('Денег маловато. Спи на улице')
 
 
 class Item:
@@ -222,8 +248,10 @@ def main():
     armor_merchant = NPC('Торговец', 'Броня')
 
     armor_shop = Location('Лавка продавца брони', player, armor_merchant)
-    street = Location('Улица', player, weapon_merchant, bandit, armor_shop, {'money': 1})
-    armor_shop.where_to_go = street
+    street = Location('Улица', player, weapon_merchant, bandit, {armor_shop}, {'money': 1})
+    armor_shop.where_to_go = {street}
+    tavern = Location('Таверна', player, where_to_go = {street}, is_inn = 1)
+    street.where_to_go.add(tavern)
     location = street
 
     small_helmet = Armor('Маленький шлем', 1, 500, 'head', 0.5)
@@ -255,13 +283,15 @@ def main():
         if location.enemy:
             print('2: Напасть на врага {}'.format(location.enemy.name))
         if location.where_to_go:
-            print('3: Перейти в локацию {}'.format(location.where_to_go.name))
+            print('3: Перейти в другую локацию')
         if location.items:
             print('4: Подобрать предмет:')
             for i in location.items:
                 print(i, location.items[i])
         print('5: Посмотреть инвентарь')
         print('6: Посмотреть слоты')
+        if location.is_inn:
+            print('7: Снять комнату за 5 монет')
         try:
             choice = int(input())
             if choice:
@@ -278,6 +308,8 @@ def main():
                 player.show_items()
             elif choice == 6:
                 player.show_slots()
+            elif choice == 7:
+                location.rent_room()
             elif choice == 0:
                 print('Выход из игры')
                 break
