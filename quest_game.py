@@ -54,7 +54,7 @@ class Player(Person):
             self.slots[item.type] = item
             self.items.remove(item)
         else:
-            print('Нельзя использовать')
+            print('\nНельзя использовать')
 
 ##    def put_off_item(self, item):
 ##        self.items.add(item)
@@ -64,14 +64,15 @@ class Player(Person):
         if self.items:
             print('Инвентарь:')
             j = 1
-            for i in self.items:
+            tmp_items = list(self.items)
+            for i in tmp_items:
                 print('{}: {}'.format(j, i.name))
                 j += 1
             print('{} монет'.format(self.money))
             choice = int(input())
             try:
-                if choice != 0 and list(self.items)[choice - 1]:
-                    self.use_item(list(self.items)[choice - 1])
+                if choice != 0 and tmp_items[choice - 1]:
+                    self.use_item(tmp_items[choice - 1])
             except (IndexError, ValueError):
                 pass
         else:
@@ -138,7 +139,7 @@ class NPC:
 
 
 class Location:
-    def __init__(self, name, player, npc = 0, enemy = 0, where_to_go = 0, items = {}):
+    def __init__(self, name, player, npc = 0, enemy = 0, where_to_go = set(), items = {}):
         self.name = name
         self.npc = npc
         self.enemy = enemy
@@ -183,6 +184,8 @@ class Location:
         battle.start()
 
     def change_location(self):
+        print('Перейти в:')
+        pass ###
         print('Вы переходите в другую локацию')
         return self.where_to_go
     def pick_up_item(self):
