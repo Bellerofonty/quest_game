@@ -19,11 +19,13 @@ class Person:
 class Player(Person):
 
     def __init__(self, name, health, armor, damage, money = 0, items = set(), \
-        slots = {'head': 0, 'body':0, 'legs': 0, 'left_arm': 0, 'right_arm': 0}):
+        slots = {'head': 0, 'body':0, 'legs': 0, 'left_arm': 0, 'right_arm': 0},
+        locs_visited = set()):
         super().__init__(name, health, armor, damage)
         self.money = money
         self.items = items.copy()
         self.slots = slots
+        self.locs_visited = locs_visited.copy()
         self._experience = 0
         self._exp_to_next_level = 100
 
@@ -283,7 +285,12 @@ def main():
             time.sleep(0.3)
         else:
             first = 1
-        print(location.name)
+
+        if location.name not in player.locs_visited:
+            print(location.name,'(я здесь впервые)')
+            player.locs_visited.add(location.name)
+        else:
+            print(location.name)
         #for i in location.npc.goods:
         #    print(i.name)
         #print(location.npc.goods)
