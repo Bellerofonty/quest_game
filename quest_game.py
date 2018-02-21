@@ -119,7 +119,7 @@ class Battle:
     def start(self):
         print('Началась драка')
         self._player.armor = 1 + self._player.count_armor()
-        print(self._player.armor)
+        #print(self._player.armor)
         last_attacker = self._player
         while self._player.health > 0 and self._enemy.health > 0:
             if last_attacker == self._player:
@@ -133,6 +133,8 @@ class Battle:
             #self._player.battle_won(enemy.get_experience_for_won())
         else:
             print('Враг победил')
+        self._player.health = 100
+        self._enemy.health = 100
 
 class NPC:
     def __init__(self, name, goods_type = 0, goods = set(), talk = 0):
