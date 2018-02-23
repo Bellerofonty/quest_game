@@ -315,7 +315,7 @@ def main():
             if choice == 1 and location.npc:
                 location.talk_to_npc()
             elif choice == 2 and location.enemy:
-                location.start_battle(player, bandit)
+                location.start_battle(player, location.enemy) ###location.enemy
             elif choice == 3 and location.where_to_go:
                 location = location.change_location()
             elif choice == 4 and location.items:
