@@ -145,6 +145,15 @@ class NPC:
         self.goods = goods.copy()
         self.talk = talk
 
+    def dialog(self):
+        with open('dialogs/' + self.name + '.txt') as f:
+            #for line in f:
+            while True:
+                line = f.readline()
+                #if line
+                print(line)
+                answer = input()
+
 
 class Location:
     def __init__(self, name, player, npc = 0, enemy = 0, where_to_go = set(),
@@ -161,6 +170,7 @@ class Location:
         print('Вы приветствуете NPC {}'.format(self.npc.name))
         if self.npc.talk:
             print('{} не против поговорить(1)'.format(self.npc.name))
+            self.npc.dialog()
         if self.npc.goods_type:
             print('{} предлагает поторговать {}(2)'.format(self.npc.name, self.npc.goods_type))
         answer = input()
@@ -255,8 +265,8 @@ class Quest:
 def main():
     player = Player('Путник', 100, 1, 10, 499)
     bandit = Enemy('Бандит', 100, 1.2, 10, 2)
-    weapon_merchant = NPC('Торговец', 'Оружие')
-    armor_merchant = NPC('Торговец', 'Броня')
+    weapon_merchant = NPC('Торговец оружием', 'Оружие')
+    armor_merchant = NPC('Торговец бронёй', 'Броня', talk = 1)
 
     armor_shop = Location('Лавка продавца брони', player, armor_merchant)
     street = Location('Улица', player, weapon_merchant, bandit, {armor_shop}, {'money': 1})
