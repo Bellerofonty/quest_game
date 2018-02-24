@@ -288,7 +288,6 @@ def main():
 
         if location.name not in player.locs_visited:
             print(location.name,'(я здесь впервые)')
-            player.locs_visited.add(location.name)
         else:
             print(location.name)
         #for i in location.npc.goods:
@@ -315,8 +314,9 @@ def main():
             if choice == 1 and location.npc:
                 location.talk_to_npc()
             elif choice == 2 and location.enemy:
-                location.start_battle(player, location.enemy) ###location.enemy
+                location.start_battle(player, location.enemy)
             elif choice == 3 and location.where_to_go:
+                player.locs_visited.add(location.name)
                 location = location.change_location()
             elif choice == 4 and location.items:
                 location.pick_up_item()
