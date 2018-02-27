@@ -10,7 +10,7 @@ def dump_data():
     'trade': ['code', 'trade()', 'fork1'],
     'repairs': ['code', 'repairs()', 'fork1'],
     'goodbye': ['Merchant', 'Come again', 'end'],
-    'end': ['code', 'sys.exit()', 'fork1']}
+    'end': ['code', 'exit_loop = 1']}
 
     with open('dialogs/new_dialog.txt', "w", encoding="utf-8") as file:
         json.dump(dict1, file)
@@ -21,24 +21,26 @@ def trade():
 def repairs():
     print('repairing')
 
-dump_data()
+def exit_dialog():
+    print('exit')
+    return 1
+    #sys.exit()
+
+#dump_data()
 
 with open('dialogs/new_dialog.txt', "r", encoding="utf-8") as file:
     dialog = json.load(file)
 
-##print(dialog['begin'][2])
-##print(type(dialog['begin'][2]))
-##print(dialog[dialog['fork1'][2][1]][2])
-
 phrase_code = 'begin'
+exit_loop = 0
 while True:
     phrase = dialog[phrase_code]
     if phrase[0] == 'code':
-##        print(phrase[1])
         exec(phrase[1])
     else:
         print('--{}--\n{}'.format(phrase[0], phrase[1]))
-
+    if exit_loop:
+        break
     if type(phrase[2]) is str:
         phrase_code = phrase[2]
     else:
@@ -58,4 +60,4 @@ while True:
     if choice:
         phrase_code = dialog[phrase[2][choice - 1]][2]
     print('')
-
+print('out of loop')
