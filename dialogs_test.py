@@ -24,40 +24,46 @@ def repairs():
 def exit_dialog():
     print('exit')
     return 1
-    #sys.exit()
 
 #dump_data()
 
-with open('dialogs/new_dialog.txt', "r", encoding="utf-8") as file:
-    dialog = json.load(file)
+def main():
+    with open('dialogs/new_dialog.txt', "r", encoding="utf-8") as file:
+        dialog = json.load(file)
 
-phrase_code = 'begin'
-exit_loop = 0
-while True:
-    phrase = dialog[phrase_code]
-    if phrase[0] == 'code':
-        exec(phrase[1])
-    else:
-        print('--{}--\n{}'.format(phrase[0], phrase[1]))
-    if exit_loop:
-        break
-    if type(phrase[2]) is str:
-        phrase_code = phrase[2]
-    else:
-        input()
+    phrase_code = 'begin'
+    exit_loop = 0
+    while True:
+        phrase = dialog[phrase_code]
+        if phrase[0] == 'code':
+            exec(phrase[1])
+        else:
+            print('--{}--\n{}'.format(phrase[0], phrase[1]))
+        if exit_loop:
+            break
+        if type(phrase[2]) is str:
+            phrase_code = phrase[2]
+        else:
+            input()
+            print('')
+            fork = phrase[2]
+            print('--{}--'.format(dialog[fork[0]][0]))
+            for num, i in enumerate(fork):
+                print(num + 1, dialog[i][1])
+        choice = input()
+        try:
+            choice = int(choice)
+        except ValueError:
+            pass
+        if choice == 0:
+                sys.exit()
+        if choice:
+            try:
+                phrase_code = dialog[phrase[2][choice - 1]][2]
+            except KeyError:
+                pass
         print('')
-        fork = phrase[2]
-        print('--{}--'.format(dialog[fork[0]][0]))
-        for num, i in enumerate(fork):
-            print(num + 1, dialog[i][1])
-    choice = input()
-    try:
-        choice = int(choice)
-    except ValueError:
-        pass
-    if choice == 0:
-            sys.exit()
-    if choice:
-        phrase_code = dialog[phrase[2][choice - 1]][2]
-    print('')
-print('out of loop')
+    print('out of loop')
+
+if __name__ == '__main__':
+    main()
