@@ -1,4 +1,5 @@
 import time
+import os
 import json
 
 class Person:
@@ -146,43 +147,14 @@ class NPC:
         self.goods = goods.copy()
         self.talk = talk
 
-    def dialog(self, npc_name):
-        import dialogs_test
-        dialogs_test.main()
-##        path = 'dialogs\\' + npc_name + '.txt'
-##        with open(path, "r", encoding="utf-8") as file:
-##            dialog = json.load(file)
-##
-##        phrase_code = 'begin'
-##        exit_loop = 0
-##        while True:
-##            phrase = dialog[phrase_code]
-##            if phrase[0] == 'code':
-##                exec(phrase[1])
-##            else:
-##                print('--{}--\n{}'.format(phrase[0], phrase[1]))
-##            if exit_loop:
-##                break
-##            if type(phrase[2]) is str:
-##                phrase_code = phrase[2]
-##            else:
-##                input()
-##                print('')
-##                fork = phrase[2]
-##                print('--{}--'.format(dialog[fork[0]][0]))
-##                for num, i in enumerate(fork):
-##                    print(num + 1, dialog[i][1])
-##            choice = input()
-##            try:
-##                choice = int(choice)
-##            except ValueError:
-##                pass
-####            if choice == 0:
-####                    sys.exit()
-##            if choice:
-##                phrase_code = dialog[phrase[2][choice - 1]][2]
-##            print('')
-##        print('out of loop')
+##    def dialog(self):
+##        with open('dialogs/' + self.name + '.txt') as f:
+##            #for line in f:
+##            while True:
+##                line = f.readline()
+##                #if line
+##                print(line)
+##                answer = input()
 
 
 class Location:
@@ -196,8 +168,51 @@ class Location:
         self.player = player
         self.is_inn = is_inn
 
-    def talk_to_npc(self):
-        self.npc.dialog(self.npc.name)
+    def talk_to_npc(self, npc):
+        path = os.path.join('dialogs', npc.name + '.txt')
+        with open(path, "r", encoding="utf-8") as file:
+            dialog = json.load(file)
+
+        phrase_code = 'begin'
+##        exit_loop = 0
+        while True:
+            phrase = dialog[phrase_code]
+            if phrase[0] == 'code':
+                if phrase[1] == 'exit_loop':
+                    break
+                elif phrase[1] == 'trade':
+                    self.trade(npc)
+                elif phrase[1] == 'repairs':
+                    print('-repairing-')
+##                exec(phrase[1])
+            else:
+                print('--{}--\n{}'.format(phrase[0], phrase[1]))
+##            if exit_loop:
+##                break
+            if type(phrase[2]) is str:
+                phrase_code = phrase[2]
+            else:
+                input()
+                print('')
+                fork = phrase[2]
+                print('--{}--'.format(dialog[fork[0]][0]))
+                for num, i in enumerate(fork):
+                    print(num + 1, dialog[i][1])
+            choice = input()
+            try:
+                choice = int(choice)
+            except ValueError:
+                pass
+            if choice == 0:
+                    sys.exit()
+            if choice:
+                try:
+                    phrase_code = dialog[phrase[2][choice - 1]][2]
+                except KeyError:
+                    pass
+            print('')
+            time.sleep(0.1)
+        print('out of loop')
 
 ##        print('Вы приветствуете NPC {}'.format(self.npc.name))
 ##        if self.npc.talk:
@@ -354,7 +369,7 @@ def main():
             if choice:
                 print('')
             if choice == 1 and location.npc:
-                location.talk_to_npc()
+                location.talk_to_npc(location.npc)
             elif choice == 2 and location.enemy:
                 location.start_battle(player, location.enemy)
             elif choice == 3 and location.where_to_go:
