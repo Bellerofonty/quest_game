@@ -2,7 +2,7 @@ import sys
 import json
 
 def dump_data():
-    dict1 = {'begin': ['Merchant', 'Hello, stranger', 'fork1'],
+    dict1 = {'begin': ['Торговец', 'Hello, stranger', 'fork1'],
     'fork1': ['Merchant', 'Need something?', ['fork1-1', 'fork1-2', 'fork1-3']],
     'fork1-1':['Player', 'Let\'s trade', 'trade'],
     'fork1-2':['Player', 'Need some repairs', 'repairs'],
@@ -13,7 +13,7 @@ def dump_data():
     'end': ['code', 'exit_loop = 1']}
 
     with open('dialogs/new_dialog.txt', "w", encoding="utf-8") as file:
-        json.dump(dict1, file)
+        json.dump(dict1, file, ensure_ascii = False)
 
 def trade():
     print('trading')

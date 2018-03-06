@@ -170,7 +170,7 @@ class Location:
 
     def talk_to_npc(self, npc):
         path = os.path.join('dialogs', npc.name + '.txt')
-        with open(path, "r", encoding="utf-8") as file:
+        with open(path, "r") as file:
             dialog = json.load(file)
 
         phrase_code = 'begin'
@@ -184,6 +184,9 @@ class Location:
                     self.trade(npc)
                 elif phrase[1] == 'repairs':
                     print('-repairing-')
+                elif phrase[1] == 'fight':
+                    tmp_enemy = Enemy('Враг', 100, 1.2, 10, 2)
+                    self.start_battle(self.player, tmp_enemy)
 ##                exec(phrase[1])
             else:
                 print('--{}--\n{}'.format(phrase[0], phrase[1]))
@@ -212,7 +215,7 @@ class Location:
                     pass
             print('')
             time.sleep(0.1)
-        print('out of loop')
+##        print('out of loop')
 
 ##        print('Вы приветствуете NPC {}'.format(self.npc.name))
 ##        if self.npc.talk:
@@ -314,12 +317,15 @@ def main():
     bandit = Enemy('Бандит', 100, 1.2, 10, 2)
     weapon_merchant = NPC('Торговец оружием', 'Оружие')
     armor_merchant = NPC('Торговец бронёй', 'Броня', talk = 1)
+    boozy_hacksmith = NPC('Пьяный кузнец')
 
     armor_shop = Location('Лавка продавца брони', player, armor_merchant)
     street = Location('Улица', player, weapon_merchant, bandit, {armor_shop}, {'money': 1})
     armor_shop.where_to_go = {street}
-    tavern = Location('Таверна', player, where_to_go = {street}, is_inn = 1)
+    tavern = Location('Таверна', player, boozy_hacksmith, where_to_go = {street}, is_inn = 1)
+    forge = Location('Кузница', player, where_to_go = {street})
     street.where_to_go.add(tavern)
+    street.where_to_go.add(forge)
     location = street
 
     small_helmet = Armor('Маленький шлем', 1, 500, 'head', 0.5)
