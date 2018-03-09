@@ -12,12 +12,14 @@ from Quest import *
 
 
 def main():
+    #Инициация персонажей
     player = Player('Путник', 100, 1, 10, 499)
     bandit = Enemy('Бандит', 100, 1.2, 10, 2)
     weapon_merchant = NPC('Торговец оружием', 'Оружие')
     armor_merchant = NPC('Торговец бронёй', 'Броня', talk = 1)
     boozy_hacksmith = NPC('Пьяный кузнец')
 
+    #Инициация локаций
     armor_shop = Location('Лавка продавца брони', player, armor_merchant)
     street = Location('Улица', player, weapon_merchant, bandit, {armor_shop}, {'money': 1})
     armor_shop.where_to_go = {street}
@@ -25,8 +27,8 @@ def main():
     forge = Location('Кузница', player, where_to_go = {street})
     street.where_to_go.add(tavern)
     street.where_to_go.add(forge)
-    location = street
 
+    #Инициация предметов
     small_helmet = Armor('Маленький шлем', 1, 500, 'head', 0.5)
     mail_shirt = Armor('Кольчуга', 7, 2000, 'body', 2)
     armor_merchant.goods = {small_helmet, mail_shirt}
@@ -40,8 +42,11 @@ def main():
     player.slots['body'] = jacket
     player.slots['legs'] = pants
 
+
+    """Основной цикл"""
+    location = street
     print('(0: Выйти из игры)')
-    first = 1
+    first = 1  # Флаг первого посещения
     while True:
         if not first:
             time.sleep(0.3)
@@ -52,9 +57,8 @@ def main():
             print(location.name,'(я здесь впервые)')
         else:
             print(location.name)
-        #for i in location.npc.goods:
-        #    print(i.name)
-        #print(location.npc.goods)
+
+        #Варианты действий
         if location.npc:
             print('1: Поговорить с NPC')
         if location.enemy:
