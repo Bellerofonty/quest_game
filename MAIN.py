@@ -1,4 +1,5 @@
 ##import time
+import importlib
 
 from Warrior import *
 from Player import *
@@ -9,18 +10,16 @@ from Location import *
 from Item import *
 from Armor import *
 from Quest import *
-
-
-
-#from globals import *
 import globals as gl
-import test_script
+
 
 """Основной цикл"""
 
 print('(0: Выйти из игры)')
 first = 1  # Флаг первого посещения
 while True:
+    mod_name = 'test_script'
+    test_script = importlib.import_module(mod_name)
     print(test_script.check())
     if not first:
         time.sleep(0.3)
