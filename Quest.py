@@ -10,7 +10,8 @@
 #-------------------------------------------------------------------------------
 class Quest:
     """В разработке"""
-    def __init__(self, name, description, bounty):
+    def __init__(self, name, description, bounty, quest_file):
         self.name = name
         self.description = description
         self.bounty = bounty
+        self.quest_file = quest_file

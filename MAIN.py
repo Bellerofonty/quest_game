@@ -14,13 +14,24 @@ import globals as gl
 
 
 """Основной цикл"""
-
 print('(0: Выйти из игры)')
 first = 1  # Флаг первого посещения
 while True:
-    mod_name = 'test_script'
-    test_script = importlib.import_module(mod_name)
-    print(test_script.check())
+##    mod_name = 'test_script'
+##    test_script = importlib.import_module(mod_name)
+##    print(test_script.check())
+
+##    for i in range(len(gl.quest_list)):
+##        quest = importlib.import_module(quest)
+##        gl.quest_list[i] = importlib.import_module(gl.quest_list[i])
+
+##    b = gl.quest_list[0]
+##    gl.quest_list[0].quest_file = importlib.import_module(gl.quest_list[0].quest_file)
+
+    for i in range(len(gl.quest_list)):
+        quest = importlib.import_module(gl.quest_list[i].quest_file)
+        quest.main()
+
     if not first:
         time.sleep(0.3)
     else:

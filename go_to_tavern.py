@@ -1,15 +1,15 @@
 #-------------------------------------------------------------------------------
-# Name:        модуль1
-# Purpose:
+# Name:        go_to_tavern
+# Purpose:     Квест: пойти в таверну
 #
 # Author:      Daniil
 #
-# Created:     17.03.2018
+# Created:     18.03.2018
 # Copyright:   (c) Daniil 2018
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
-import globals
+def main():
+    import globals as gl
 
-def check():
-    if globals.location == globals.tavern:
-        return globals.location.name
+    if gl.location == gl.tavern:
+        print('Вот и таверна')

@@ -18,14 +18,14 @@ from Item import *
 from Armor import *
 from Quest import *
 
-#Инициация персонажей
+# Инициация персонажей
 player = Player('Путник', 100, 1, 10, 499)
 bandit = Enemy('Бандит', 100, 1.2, 10, 2)
 weapon_merchant = NPC('Торговец оружием', 'Оружие')
 armor_merchant = NPC('Торговец бронёй', 'Броня', talk = 1)
 boozy_hacksmith = NPC('Пьяный кузнец')
 
-#Инициация локаций
+# Инициация локаций
 armor_shop = Location('Лавка продавца брони', player, armor_merchant)
 street = Location('Улица', player, weapon_merchant, bandit, {armor_shop}, {'money': 1})
 armor_shop.where_to_go = {street}
@@ -36,7 +36,7 @@ street.where_to_go.add(forge)
 
 location = street
 
-#Инициация предметов
+# Инициация предметов
 small_helmet = Armor('Маленький шлем', 1, 500, 'head', 0.5)
 mail_shirt = Armor('Кольчуга', 7, 2000, 'body', 2)
 armor_merchant.goods = {small_helmet, mail_shirt}
@@ -49,3 +49,9 @@ old_medallion = Item('Старый медальон', 0.1, 300)
 player.add_item(old_medallion)
 player.slots['body'] = jacket
 player.slots['legs'] = pants
+
+# Инициализация квестов
+quest_list = []
+quest1 = Quest('Найти Таверну', 'Должна же здесь где-то быть таверна',
+     0, 'go_to_tavern')
+quest_list.append(quest1)
