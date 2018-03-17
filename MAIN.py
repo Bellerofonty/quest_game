@@ -12,7 +12,8 @@ from Quest import *
 
 
 
-from globals import *
+#from globals import *
+import globals as gl
 import test_script
 
 """Основной цикл"""
@@ -26,45 +27,45 @@ while True:
     else:
         first = 0
 
-    if location.name not in player.locs_visited:
-        print(location.name,'(я здесь впервые)')
+    if gl.location.name not in gl.player.locs_visited:
+        print(gl.location.name,'(я здесь впервые)')
     else:
-        print(location.name)
+        print(gl.location.name)
 
     #Варианты действий
-    if location.npc:
+    if gl.location.npc:
         print('1: Поговорить с NPC')
-    if location.enemy:
-        print('2: Напасть на врага {}'.format(location.enemy.name))
-    if location.where_to_go:
+    if gl.location.enemy:
+        print('2: Напасть на врага {}'.format(gl.location.enemy.name))
+    if gl.location.where_to_go:
         print('3: Перейти в другую локацию')
-    if location.items:
+    if gl.location.items:
         print('4: Подобрать предмет:')
-        for i in location.items:
-            print(i, location.items[i])
+        for i in gl.location.items:
+            print(i, gl.location.items[i])
     print('5: Посмотреть инвентарь')
     print('6: Посмотреть слоты')
-    if location.is_inn:
+    if gl.location.is_inn:
         print('7: Снять комнату за 5 монет')
     try:
         choice = int(input())
         if choice:
             print('')
-        if choice == 1 and location.npc:
-            location.talk_to_npc(location.npc)
-        elif choice == 2 and location.enemy:
-            location.start_battle(player, location.enemy)
-        elif choice == 3 and location.where_to_go:
-            player.locs_visited.add(location.name)
-            location = location.change_location()
-        elif choice == 4 and location.items:
-            location.pick_up_item()
+        if choice == 1 and gl.location.npc:
+            gl.location.talk_to_npc(gl.location.npc)
+        elif choice == 2 and gl.location.enemy:
+            gl.location.start_battle(player, gl.location.enemy)
+        elif choice == 3 and gl.location.where_to_go:
+            gl.player.locs_visited.add(gl.location.name)
+            gl.location = gl.location.change_location()
+        elif choice == 4 and gl.location.items:
+            gl.location.pick_up_item()
         elif choice == 5:
-            player.show_items()
+            gl.player.show_items()
         elif choice == 6:
-            player.show_slots()
+            gl.player.show_slots()
         elif choice == 7:
-            location.rent_room()
+            gl.location.rent_room()
         elif choice == 0:
             print('Выход из игры')
             break
