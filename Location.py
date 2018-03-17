@@ -14,6 +14,7 @@ import json
 
 from Battle import *
 from Armor import *
+from Enemy import *
 
 class Location:
     def __init__(self, name, player, npc = 0, enemy = 0, where_to_go = set(),
