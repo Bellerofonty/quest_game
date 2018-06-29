@@ -64,7 +64,7 @@ while True:
         if choice == 1 and gl.location.npc:
             gl.location.talk_to_npc(gl.location.npc)
         elif choice == 2 and gl.location.enemy:
-            gl.location.start_battle(player, gl.location.enemy)
+            gl.location.start_battle(gl.player, gl.location.enemy)
         elif choice == 3 and gl.location.where_to_go:
             gl.player.locs_visited.add(gl.location.name)
             gl.location = gl.location.change_location()
